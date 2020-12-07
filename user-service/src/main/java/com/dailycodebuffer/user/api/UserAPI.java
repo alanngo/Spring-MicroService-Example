@@ -8,6 +8,8 @@ import static org.springframework.http.HttpStatus.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @CrossOrigin
 @RequestMapping("/users")
@@ -16,6 +18,13 @@ public class UserAPI
 {
     @Autowired
     private UserService userService;
+
+    @GetMapping("")
+    public ResponseEntity<List<UserDTO>> showUsers()
+    {
+        log.info("inside showUsers API");
+        return new ResponseEntity<>(userService.showUsers(), OK);
+    }
 
     @PostMapping("/{departmentId}")
     public ResponseEntity<UserDTO> saveUser(@RequestBody UserDTO userDTO, @PathVariable String departmentId)

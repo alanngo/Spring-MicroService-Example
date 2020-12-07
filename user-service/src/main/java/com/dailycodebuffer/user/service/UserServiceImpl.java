@@ -12,6 +12,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service("userService")
 @Transactional
 public class UserServiceImpl implements UserService
@@ -23,9 +26,17 @@ public class UserServiceImpl implements UserService
     private RestTemplate restTemplate;
 
     @Override
-    public UserDTO saveUser(UserDTO userDTO, String userId)
+    public List<UserDTO> showUsers()
     {
-        Department department= restTemplate.getForObject("http://localhost:9000/departments/"+userId, Department.class);
+        List<UserDTO> ret = new ArrayList<>();
+        userRepository.findAll().forEach(user -> ret.add(toDTO(user)));
+        return ret;
+    }
+
+    @Override
+    public UserDTO saveUser(UserDTO userDTO, String departmentId)
+    {
+        Department department= restTemplate.getForObject("http://DEPARTMENT-SERVICE/departments/"+departmentId, Department.class);
         userDTO.setDepartment(department);
         User entity=userRepository.save(toEntity(userDTO));
         return toDTO(entity);
